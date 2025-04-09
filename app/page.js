@@ -1,4 +1,4 @@
-export default async function Main() {
+export default async function Home() {
     return (
       <div>
             <h1>Hello World</h1>
