@@ -128,7 +128,7 @@ export const uploadRecording = async (videoBlob) => {
 
     formData.append('video', videoBlob, 'recorded-video.webm');
 
-    await fetch('https://ar-furniture-nodejs.onrender.com/api/video-upload', {
+    await fetch('https://ar-prototype-nodejs.onrender.com/api/video-upload', {
         method: 'POST',
         body: formData,
         credentials: 'include',
