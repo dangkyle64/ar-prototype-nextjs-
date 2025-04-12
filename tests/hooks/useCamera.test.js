@@ -306,7 +306,7 @@ describe('uploadRecording', () => {
         await uploadRecording(mockBlob);
 
         expect(fetch).toHaveBeenCalledWith(
-            'https://ar-furniture-nodejs.onrender.com/api/video-upload',
+            'https://ar-prototype-nodejs.onrender.com/api/video-upload',
             expect.objectContaining({
                 method: 'POST',
                 body: expect.any(FormData),
@@ -323,7 +323,7 @@ describe('uploadRecording', () => {
         await uploadRecording(mockBlob);
     
         expect(fetch).toHaveBeenCalledWith(
-            'https://ar-furniture-nodejs.onrender.com/api/video-upload',
+            'https://ar-prototype-nodejs.onrender.com/api/video-upload',
             expect.objectContaining({
                 method: 'POST',
                 body: expect.any(FormData),
