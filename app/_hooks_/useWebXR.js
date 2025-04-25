@@ -38,7 +38,7 @@ export const useWebXR = () => {
             });
             console.log('onXRFRame started. referenceSpace: ', returnedReferenceSpace);
 
-            session.requestAnimationFrame((time, frame) => onXRFrame(session, returnedReferenceSpace, time, frame, initializedHitTestSource));
+            session.requestAnimationFrame((time, frame) => onXRFrame(session, returnedReferenceSpace, time, frame, initializedHitTestSource, setModelPosition));
 
         } catch (error) {
             console.log('Error: ', error);
@@ -143,7 +143,7 @@ export const initializeHitSource = async (session, referenceSpace) => {
     };
 };
 
-export const onXRFrame = (session, referenceSpace, time, frame, hitTestSource) => {
+export const onXRFrame = (session, referenceSpace, time, frame, hitTestSource, setModelPosition) => {
     if (!referenceSpace) {
         session.requestAnimationFrame((time, frame) => onXRFrame(session, referenceSpace, time, frame));
         return;
@@ -162,13 +162,13 @@ export const onXRFrame = (session, referenceSpace, time, frame, hitTestSource) =
     };
 
     if (hitTestSource) {
-        performHitTest(time, frame, referenceSpace, hitTestSource);
+        performHitTest(time, frame, referenceSpace, hitTestSource, setModelPosition);
     };
 
-    session.requestAnimationFrame((time, frame) => onXRFrame(session, referenceSpace, time, frame, hitTestSource));
+    session.requestAnimationFrame((time, frame) => onXRFrame(session, referenceSpace, time, frame, hitTestSource, setModelPosition));
 };
 
-const createHitPosePositionOrientation = (setModelPosition) => {
+const createHitPosePositionOrientation = () => {
 
     const hitTestData = [];
     const maxEntriesForHitPoints = 5;
@@ -180,8 +180,6 @@ const createHitPosePositionOrientation = (setModelPosition) => {
                 
             const { x, y, z } = hitPose.transform.position;
             const { x: qx, y: qy, z: qz, w: qw } = hitPose.transform.orientation;
-
-            setModelPosition({ x, y, z });
 
             hitTestData.push({
                 time: time,
@@ -200,12 +198,18 @@ const createHitPosePositionOrientation = (setModelPosition) => {
 
 const hitPoseTracker = createHitPosePositionOrientation();
 
-const performHitTest = (time, frame, referenceSpace, hitTestSource) => {
+const performHitTest = (time, frame, referenceSpace, hitTestSource, setModelPosition) => {
     const hitTestResults = getHitTestResults(frame, hitTestSource);
 
     if (hitTestResults.length > 0) {
         const hitTestData = hitPoseTracker(time, hitTestResults, referenceSpace);
-        //console.log('Hit Test Data:', hitTestData[0])
+        const hitPose = hitTestResults[0].getPose(referenceSpace);
+
+        if (hitPose) {
+            const { x, y, z } = hitPose.transform.position;
+            setModelPosition({ x, y, z });
+            console.log('Hit position:', { x, y, z });
+        };
         
     } else {
         console.log('No hit test results found');
