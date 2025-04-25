@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import * as THREE from 'three';
 import { PLYLoader } from 'three/examples/jsm/loaders/PLYLoader';
-import { getModelRefState } from './useWebXR.js';
+import { getModelRef } from './useWebXR.js';
 
 export const usePlyModel = (plyFileUrl, modelPosition) => {
     const [isModelLoaded, setIsModelLoaded] = useState(false);
@@ -21,7 +21,7 @@ export const usePlyModel = (plyFileUrl, modelPosition) => {
         mesh.position.set(modelPosition.x, modelPosition.y, modelPosition.z);
 
         setModelRef(mesh);
-        getModelRefState(mesh);
+        getModelRef(mesh);
         setIsModelLoaded(true);
         console.log('MODEL LOADED');
         });
@@ -35,11 +35,11 @@ export const usePlyModel = (plyFileUrl, modelPosition) => {
         };
     }, [plyFileUrl, modelPosition]);
 
-    // Fallback: If the model is not loaded, return a sphere
     const fallbackGeometry = new THREE.SphereGeometry(1, 32, 32); // Default sphere
     const fallbackMaterial = new THREE.MeshStandardMaterial({ color: 0x0077ff }); // Blue color
     const fallbackSphere = new THREE.Mesh(fallbackGeometry, fallbackMaterial);
-    fallbackSphere.position.set(modelPosition.x, modelPosition.y, modelPosition.z);
+    const position = modelPosition || { x: 0, y: 0, z: 0 }; // Default position if modelPosition is not valid
+    fallbackSphere.position.set(position.x, position.y, position.z);
 
     return {
         isModelLoaded,
