@@ -7,13 +7,13 @@ import { useState, useEffect } from 'react';
 const ArSceneControls = () => {
 
     const { videoRef, isSessionActive, setSessionNotActive, setSessionActive } = useArSceneState();
-    const { session, xrError, handleStartARSession, handleEndARSession } = useWebXR();
+    const { session, xrError, modelPosition, handleStartARSession, handleEndARSession } = useWebXR();
 
     console.log('Initial load', session);
 
     const plyFileUrl = "https://ar-prototype-nodejs.onrender.com/api/ply/fused.ply";
 
-    const { isModelLoaded, modelRef } = usePlyModel(plyFileUrl, session);
+    const { isModelLoaded, modelRef } = usePlyModel(plyFileUrl, modelPosition);
 
     useEffect(() => {
         handleSessionValidation(session, setSessionNotActive, setSessionActive);

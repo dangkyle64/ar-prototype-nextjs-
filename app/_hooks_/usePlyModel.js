@@ -1,25 +1,21 @@
-import { useEffect, useState } from 'react';
 import * as THREE from 'three';
 import { PLYLoader } from 'three/examples/jsm/loaders/PLYLoader';
 
-export const usePlyModel = (plyFileUrl, xrSession) => {
+export const usePlyModel = (plyFileUrl, modelPosition) => {
     const [isModelLoaded, setIsModelLoaded] = useState(false);
     const [modelRef, setModelRef] = useState(null);
 
     useEffect(() => {
-        if (!plyFileUrl || !xrSession) return;
+        if (!plyFileUrl || !modelPosition) return;
 
         const loader = new PLYLoader();
-        
         loader.load(plyFileUrl, (geometry) => {
             const material = new THREE.MeshStandardMaterial({ color: 0x00ff00 });
             const mesh = new THREE.Mesh(geometry, material);
+
+            mesh.position.set(modelPosition.x, modelPosition.y, modelPosition.z);
             
-            mesh.position.set(0, 0, -2); 
-            
-            xrSession.requestAnimationFrame(() => {
-                xrSession.scene.add(mesh);
-            });
+            // xrSession.scene.add(mesh);
 
             setModelRef(mesh);
             setIsModelLoaded(true);
@@ -27,12 +23,11 @@ export const usePlyModel = (plyFileUrl, xrSession) => {
 
         return () => {
             if (modelRef) {
-                xrSession.scene.remove(modelRef);
                 modelRef.geometry.dispose();
                 modelRef.material.dispose();
             }
         };
-    }, [plyFileUrl, xrSession, modelRef]);
+    }, [plyFileUrl, modelPosition]);
 
     return { isModelLoaded, modelRef };
 };

@@ -7,6 +7,7 @@ export const useWebXR = () => {
     const { xrError, populateSetXRError } = useErrorState();
 
     const [hitTestSource, setHitTestSource] = useState(null);
+    const [modelPosition, setModelPosition] = useState(null);
 
     useEffect(() => {
         checkWebXRPossible(populateSetXRError);
@@ -71,6 +72,7 @@ export const useWebXR = () => {
         session,
         referenceSpace,
         xrError,
+        modelPosition,
         handleStartARSession,
         handleEndARSession,
     };
@@ -166,7 +168,7 @@ export const onXRFrame = (session, referenceSpace, time, frame, hitTestSource) =
     session.requestAnimationFrame((time, frame) => onXRFrame(session, referenceSpace, time, frame, hitTestSource));
 };
 
-const createHitPosePositionOrientation = () => {
+const createHitPosePositionOrientation = (setModelPosition) => {
 
     const hitTestData = [];
     const maxEntriesForHitPoints = 5;
@@ -178,6 +180,8 @@ const createHitPosePositionOrientation = () => {
                 
             const { x, y, z } = hitPose.transform.position;
             const { x: qx, y: qy, z: qz, w: qw } = hitPose.transform.orientation;
+
+            setModelPosition({ x, y, z });
 
             hitTestData.push({
                 time: time,
@@ -201,7 +205,8 @@ const performHitTest = (time, frame, referenceSpace, hitTestSource) => {
 
     if (hitTestResults.length > 0) {
         const hitTestData = hitPoseTracker(time, hitTestResults, referenceSpace);
-        //console.log('Hit Test Data:', hitTestData);
+        //console.log('Hit Test Data:', hitTestData[0])
+        
     } else {
         console.log('No hit test results found');
     };
