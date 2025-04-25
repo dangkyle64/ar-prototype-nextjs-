@@ -1,4 +1,5 @@
 import { useArSceneState } from '../../_hooks_/useArSceneState';
+import { usePlyModel } from '../../_hooks_/usePlyModel';
 import { useWebXR } from '../../_hooks_/useWebXR';
 import styles from './ArSceneControls.module.css';
 import { useState, useEffect } from 'react';
@@ -9,6 +10,10 @@ const ArSceneControls = () => {
     const { session, xrError, handleStartARSession, handleEndARSession } = useWebXR();
 
     console.log('Initial load', session);
+
+    const plyFileUrl = "https://ar-prototype-nodejs.onrender.com/api/ply/fused.ply";
+
+    const { isModelLoaded, modelRef } = usePlyModel(plyFileUrl, session);
 
     useEffect(() => {
         handleSessionValidation(session, setSessionNotActive, setSessionActive);
@@ -33,6 +38,9 @@ const ArSceneControls = () => {
                     {session ? 'End AR Session' : 'Start AR Session'}
                 </button>
             </div>
+
+            {/* Display model loading status */}
+            {isModelLoaded ? <div>Model Loaded!</div> : <div>Loading Model...</div>}
         </div>
     );
 };
