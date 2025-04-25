@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import * as THREE from 'three';
 import { PLYLoader } from 'three/examples/jsm/loaders/PLYLoader';
-import { getModelRefState } from './useWebXR';
+import { getModelRefState } from './useWebXR.js';
 
 export const usePlyModel = (plyFileUrl, modelPosition) => {
     const [isModelLoaded, setIsModelLoaded] = useState(false);
