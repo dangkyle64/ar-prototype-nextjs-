@@ -13,7 +13,7 @@ export const onXRFrame = (session, referenceSpace, time, frame, hitTestSource, s
         const cameraPosition = transform.position;
         const cameraRotation = transform.orientation;
 
-        const { position, orientation } = xrPose;
+        const { position = { x: 0, y: 0, z: 0 }, orientation = { x: 0, y: 0, z: 0, w: 1 } } = xrPose;
         camera.position.set(position.x, position.y, position.z);
         camera.rotation.set(orientation.x, orientation.y, orientation.z);
 
