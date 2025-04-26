@@ -57,7 +57,7 @@ const requestFrameAnimation = (session, referenceSpace, hitTestSource) => {
     };
 };
 
-const handleStartARSessionOrchestral = async (setSessionState, setReferenceSpaceState, setHitTestSource) => {
+const handleStartARSessionOrchestral = async ({setSessionState, setReferenceSpaceState, setHitTestSource}) => {
     const overlayElement = document.getElementById('overlay');
 
     try {
