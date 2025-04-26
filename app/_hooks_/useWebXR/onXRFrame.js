@@ -9,11 +9,11 @@ export const onXRFrame = (session, referenceSpace, time, frame, hitTestSource, s
 
     if(xrPose && xrPose.views && xrPose.views.length > 0) {
         const pose = xrPose.views[0];
-        const transform = pose.transform;
-        const cameraPosition = transform.position;
-        const cameraRotation = transform.orientation;
+        //const transform = pose.transform;
+        //const cameraPosition = transform.position;
+        //const cameraRotation = transform.orientation;
 
-        const { position = { x: 0, y: 0, z: 0 }, orientation = { x: 0, y: 0, z: 0, w: 1 } } = xrPose;
+        const { position = { x: 0, y: 0, z: 0 }, orientation = { x: 0, y: 0, z: 0, w: 1 } } = pose;
         camera.position.set(position.x, position.y, position.z);
         camera.rotation.set(orientation.x, orientation.y, orientation.z);
 
@@ -21,10 +21,8 @@ export const onXRFrame = (session, referenceSpace, time, frame, hitTestSource, s
         //console.log('Camera Rotation (Quaternion):', cameraRotation);
 
         renderer.render(scene, camera);
-    };
-
-    if (hitTestSource) {
-        //performHitTest(time, frame, referenceSpace, hitTestSource);
+    } else {
+        console.error("xrPose or its views are undefined");
     };
     
     session.requestAnimationFrame((time, frame) => onXRFrame(session, referenceSpace, time, frame, hitTestSource));
