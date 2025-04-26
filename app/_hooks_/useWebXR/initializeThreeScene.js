@@ -20,7 +20,5 @@ export const initializeThreeScene = (gl) => {
 
     scene.add(sphere);
 
-    camera.position.z = 2;
-    
     return { scene, camera, renderer, sphere };
 };

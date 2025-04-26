@@ -50,11 +50,11 @@ const requestHitTestSource = async (session, referenceSpace) => {
 
 const requestFrameAnimation = (session, referenceSpace, hitTestSource, gl) => {
 
-    const { scene, camera, renderer } = initializeThreeScene(gl);
+    const { scene, camera, renderer, sphere } = initializeThreeScene(gl);
 
     try {
         session.requestAnimationFrame((time, frame) => {
-            onXRFrame(session, referenceSpace, time, frame, hitTestSource, scene, camera, renderer);
+            onXRFrame(session, referenceSpace, time, frame, hitTestSource, scene, camera, renderer, sphere);
         });
     } catch(error) {
         throw new Error('Error starting the animation frame: ', error);

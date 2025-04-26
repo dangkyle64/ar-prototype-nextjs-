@@ -1,6 +1,6 @@
-export const onXRFrame = (session, referenceSpace, time, frame, hitTestSource, scene, camera, renderer) => {
+export const onXRFrame = (session, referenceSpace, time, frame, hitTestSource, scene, camera, renderer, sphere) => {
     if (!referenceSpace) {
-        session.requestAnimationFrame((time, frame) => onXRFrame(session, referenceSpace, time, frame, hitTestSource, scene, camera, renderer));
+        session.requestAnimationFrame((time, frame) => onXRFrame(session, referenceSpace, time, frame, hitTestSource, scene, camera, renderer, sphere));
         return;
     };
     
@@ -16,6 +16,10 @@ export const onXRFrame = (session, referenceSpace, time, frame, hitTestSource, s
         camera.position.set(cameraPosition.x, cameraPosition.y, cameraPosition.z);
         camera.rotation.set(cameraRotation.x, cameraRotation.y, cameraRotation.z);
 
+        sphere.position.set(camera.position.x + 1, camera.position.y, camera.position.z - 2);
+
+        console.log('Camera Position:', camera.position);
+        console.log('Sphere Position:', sphere.position);
         //console.log('Camera Position:', cameraPosition);
         //console.log('Camera Rotation (Quaternion):', cameraRotation);
 
@@ -24,5 +28,5 @@ export const onXRFrame = (session, referenceSpace, time, frame, hitTestSource, s
         console.error("xrPose or its views are undefined");
     };
     
-    session.requestAnimationFrame((time, frame) => onXRFrame(session, referenceSpace, time, frame, hitTestSource, scene, camera, renderer));
+    session.requestAnimationFrame((time, frame) => onXRFrame(session, referenceSpace, time, frame, hitTestSource, scene, camera, renderer, sphere));
 };
