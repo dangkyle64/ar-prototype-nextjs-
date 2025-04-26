@@ -1,6 +1,11 @@
 import { useEffect, useState } from 'react';
 import { useErrorState } from './useErrorState';
 import { useArSceneState } from './useArSceneState';
+import { checkWebXRPossible } from './useWebXR/checkWebXRPossible.js';
+import { initializeWebGl2 } from './useWebXR/initializeWebGL2.js';
+import { requestReferenceSpace } from './useWebXR/requestReferenceSpace.js';
+import { initializeHitSource } from './useWebXR/initializeHitSource.js';
+import { onXRFrame } from './useWebXR/onXRFrame.js';
 
 let currentModelRef = null;
 export const setModelRef = (ref) => (currentModelRef = ref);
@@ -80,120 +85,6 @@ export const useWebXR = () => {
         handleStartARSession,
         handleEndARSession,
     };
-};
-
-export const checkWebXRPossible = async (populateSetXRError) => {
-    if (typeof navigator === 'undefined') {
-        populateSetXRError('Navigator object is undefined.');
-        return;
-    };
-
-    if (!navigator.xr) {
-        populateSetXRError('WebXR is not supported on this device.');
-        return;
-    };
-
-    const isARSupported = await navigator.xr.isSessionSupported('immersive-ar');
-    if (!isARSupported) {
-        populateSetXRError('AR is not supported on this device.');
-        return;
-    };
-};
-
-let renderer, scene, camera; // declare these globally or export them
-
-export const initializeWebGl2 = (session) => {
-    const canvas = document.createElement('canvas');
-    const gl = canvas.getContext('webgl2', { xrCompatible: true });
-
-    if (!gl) {
-        throw new Error('WebGL context not available.');
-    }
-
-    const xrLayer = new XRWebGLLayer(session, gl);
-    session.updateRenderState({ baseLayer: xrLayer });
-
-    // Attach Three.js renderer to the WebGL context
-    renderer = new THREE.WebGLRenderer({ canvas, context: gl });
-    renderer.autoClear = false;
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.xr.enabled = true;
-
-    // Set renderer to use session
-    renderer.xr.setSession(session);
-
-    // Create a default scene and camera
-    scene = new THREE.Scene();
-    camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.01, 20);
-
-    return xrLayer;
-};
-
-export const getSceneObjects = () => ({ renderer, scene, camera });
-
-export const requestReferenceSpace = async (session) => {
-    try {
-
-        if (!session) {
-            throw new Error('Failed to request reference space: Missing session.');
-        }
-        
-        const referenceSpace = await session.requestReferenceSpace('viewer');
-        return referenceSpace;
-    } catch(error) {
-        throw new Error(`Failed to request reference space: ${error.message || error}`);
-    };
-};
-
-export const initializeHitSource = async (session, referenceSpace) => {
-    try {
-
-        if (!session) {
-            throw new Error('Failed to initialize the hit source: Missing session.');
-        };
-
-        if (!referenceSpace) {
-             throw new Error('Failed to initialize the hit source: Missing referenceSpace.');
-        };
-
-        const initializedHitTestSource = await session.requestHitTestSource({ space: referenceSpace });
-        //console.log('HitTestSource initialized:', initializedHitTestSource);
-        return initializedHitTestSource;
-    } catch (error) {
-        throw new Error(`Failed to initialize the hit source: ${error.message || error}`);
-    };
-};
-
-export const onXRFrame = (session, referenceSpace, time, frame, hitTestSource, setModelPosition) => {
-    if (!referenceSpace) {
-        session.requestAnimationFrame((time, frame) => onXRFrame(session, referenceSpace, time, frame));
-        return;
-    };
-
-    const { renderer, scene, camera } = getSceneObjects();
-    
-    const xrPose = frame.getViewerPose(referenceSpace);
-
-    if(xrPose) {
-        const pose = xrPose.views[0];
-        const transform = pose.transform;
-        const cameraPosition = transform.position;
-        const cameraRotation = transform.orientation;
-        
-        camera.matrix.fromArray(view.transform.matrix);
-        camera.matrix.decompose(camera.position, camera.quaternion, camera.scale);
-        camera.updateMatrixWorld(true);
-
-        console.log('Camera Position:', cameraPosition);
-        console.log('Camera Rotation (Quaternion):', cameraRotation);
-    };
-
-    if (hitTestSource) {
-        performHitTest(time, frame, referenceSpace, hitTestSource, setModelPosition);
-    };
-    renderer.render(scene, camera);
-    
-    session.requestAnimationFrame((time, frame) => onXRFrame(session, referenceSpace, time, frame, hitTestSource, setModelPosition));
 };
 
 const createHitPosePositionOrientation = () => {
