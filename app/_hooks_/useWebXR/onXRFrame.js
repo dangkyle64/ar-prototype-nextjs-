@@ -1,4 +1,4 @@
-export const onXRFrame = (session, referenceSpace, time, frame, hitTestSource, setModelPosition) => {
+export const onXRFrame = (session, referenceSpace, time, frame, hitTestSource, scene, camera, renderer) => {
     if (!referenceSpace) {
         session.requestAnimationFrame((time, frame) => onXRFrame(session, referenceSpace, time, frame));
         return;
@@ -12,8 +12,14 @@ export const onXRFrame = (session, referenceSpace, time, frame, hitTestSource, s
         const cameraPosition = transform.position;
         const cameraRotation = transform.orientation;
 
-        console.log('Camera Position:', cameraPosition);
-        console.log('Camera Rotation (Quaternion):', cameraRotation);
+        const { position, orientation } = xrPose;
+        camera.position.set(position.x, position.y, position.z);
+        camera.rotation.set(orientation.x, orientation.y, orientation.z);
+
+        //console.log('Camera Position:', cameraPosition);
+        //console.log('Camera Rotation (Quaternion):', cameraRotation);
+
+        renderer.render(scene, camera);
     };
 
     if (hitTestSource) {

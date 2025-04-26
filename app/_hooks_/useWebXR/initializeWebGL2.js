@@ -1,5 +1,3 @@
-
-
 export const initializeWebGl2 = (session) => {
     const canvas = document.createElement('canvas');
     const gl = canvas.getContext('webgl2', { xrCompatible: true });
@@ -11,5 +9,5 @@ export const initializeWebGl2 = (session) => {
     const xrLayer = new XRWebGLLayer(session, gl);
     session.updateRenderState({ baseLayer: xrLayer });
 
-    return xrLayer;
+    return { gl, xrLayer };
 };

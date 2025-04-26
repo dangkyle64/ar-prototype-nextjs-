@@ -6,6 +6,7 @@ import { initializeWebGl2 } from './useWebXR/initializeWebGL2.js';
 import { initializeHitSource } from './useWebXR/initializeHitSource.js';
 import { onXRFrame } from './useWebXR/onXRFrame.js';
 import { initializeReferenceSpace } from './useWebXR/requestReferenceSpace.js';
+import { initializeThreeScene } from './useWebXR/initializeThreeScene.js';
 
 const requestARSession = async (overlayElement) => {
     try {
@@ -47,10 +48,13 @@ const requestHitTestSource = async (session, referenceSpace) => {
     };
 };
 
-const requestFrameAnimation = (session, referenceSpace, hitTestSource) => {
+const requestFrameAnimation = (session, referenceSpace, hitTestSource, gl) => {
+
+    const { scene, camera, renderer } = initializeThreeScene(gl);
+
     try {
         session.requestAnimationFrame((time, frame) => {
-            onXRFrame(session, referenceSpace, time, frame, hitTestSource);
+            onXRFrame(session, referenceSpace, time, frame, hitTestSource, scene, camera, renderer);
         });
     } catch(error) {
         throw new Error('Error starting the animation frame: ', error);
@@ -64,7 +68,7 @@ const handleStartARSessionOrchestral = async ({setSessionState, setReferenceSpac
         const session = await requestARSession(overlayElement);
         setSessionState(session);
 
-        requestInitializeWebGL2(session);
+        const { gl, xrLayer } = requestInitializeWebGL2(session);
 
         const referenceSpace = await requestReferenceSpace(session);
         setReferenceSpaceState(referenceSpace);
@@ -74,7 +78,7 @@ const handleStartARSessionOrchestral = async ({setSessionState, setReferenceSpac
 
         session.addEventListener('end', () => setSessionState(null));
 
-        session.requestAnimationFrame((time, frame) => onXRFrame(session, referenceSpace, time, frame, hitTestSource));
+        requestFrameAnimation(session, referenceSpace, hitTestSource, gl);
 
         console.log('AR session started successfully');
     } catch(error) {
