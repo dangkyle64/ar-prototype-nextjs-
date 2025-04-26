@@ -24,8 +24,8 @@ export const onXRFrame = (session, referenceSpace, time, frame, hitTestSource, s
     };
 
     if (hitTestSource) {
-        //performHitTest(time, frame, referenceSpace, hitTestSource, setModelPosition);
+        //performHitTest(time, frame, referenceSpace, hitTestSource);
     };
     
-    session.requestAnimationFrame((time, frame) => onXRFrame(session, referenceSpace, time, frame, hitTestSource, setModelPosition));
+    session.requestAnimationFrame((time, frame) => onXRFrame(session, referenceSpace, time, frame, hitTestSource));
 };
