@@ -5,8 +5,9 @@ export const onXRFrame = (session, referenceSpace, time, frame, hitTestSource, s
     };
     
     const xrPose = frame.getViewerPose(referenceSpace);
+    console.log('xrPose:', xrPose);
 
-    if(xrPose) {
+    if(xrPose && xrPose.views && xrPose.views.length > 0) {
         const pose = xrPose.views[0];
         const transform = pose.transform;
         const cameraPosition = transform.position;
