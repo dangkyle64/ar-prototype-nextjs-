@@ -1,6 +1,6 @@
 export const onXRFrame = (session, referenceSpace, time, frame, hitTestSource, scene, camera, renderer) => {
     if (!referenceSpace) {
-        session.requestAnimationFrame((time, frame) => onXRFrame(session, referenceSpace, time, frame));
+        session.requestAnimationFrame((time, frame) => onXRFrame(session, referenceSpace, time, frame, hitTestSource, scene, camera, renderer));
         return;
     };
     
@@ -26,5 +26,5 @@ export const onXRFrame = (session, referenceSpace, time, frame, hitTestSource, s
         console.error("xrPose or its views are undefined");
     };
     
-    session.requestAnimationFrame((time, frame) => onXRFrame(session, referenceSpace, time, frame, hitTestSource));
+    session.requestAnimationFrame((time, frame) => onXRFrame(session, referenceSpace, time, frame, hitTestSource, scene, camera, renderer));
 };
