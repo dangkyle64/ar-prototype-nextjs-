@@ -5,7 +5,7 @@ export const onXRFrame = (session, referenceSpace, time, frame, hitTestSource, s
     };
     
     const xrPose = frame.getViewerPose(referenceSpace);
-    console.log('xrPose:', xrPose);
+    //console.log('xrPose:', xrPose);
 
     if(xrPose && xrPose.views && xrPose.views.length > 0) {
         const pose = xrPose.views[0];
@@ -13,8 +13,8 @@ export const onXRFrame = (session, referenceSpace, time, frame, hitTestSource, s
         const cameraPosition = transform.position;
         const cameraRotation = transform.orientation;
 
-        camera.position.set(cameraPosition);
-        camera.rotation.set(cameraRotation);
+        camera.position.set(cameraPosition.x, cameraPosition.y, cameraPosition.z);
+        camera.rotation.set(cameraRotation.x, cameraRotation.y, cameraRotation.z);
 
         //console.log('Camera Position:', cameraPosition);
         //console.log('Camera Rotation (Quaternion):', cameraRotation);
