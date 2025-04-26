@@ -13,13 +13,11 @@ export const onXRFrame = (session, referenceSpace, time, frame, hitTestSource, s
         const cameraPosition = transform.position;
         const cameraRotation = transform.orientation;
 
-        const { position = { x: 0, y: 0, z: 0 }, orientation = { x: 0, y: 0, z: 0, w: 1 } } = pose;
+        camera.position.set(cameraPosition);
+        camera.rotation.set(cameraRotation);
 
-        //camera.position.set(position.x, position.y, position.z);
-        //camera.rotation.set(orientation.x, orientation.y, orientation.z);
-
-        console.log('Camera Position:', cameraPosition);
-        console.log('Camera Rotation (Quaternion):', cameraRotation);
+        //console.log('Camera Position:', cameraPosition);
+        //console.log('Camera Rotation (Quaternion):', cameraRotation);
 
         renderer.render(scene, camera);
     } else {
