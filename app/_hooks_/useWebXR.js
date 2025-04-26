@@ -7,10 +7,40 @@ import { requestReferenceSpace } from './useWebXR/requestReferenceSpace.js';
 import { initializeHitSource } from './useWebXR/initializeHitSource.js';
 import { onXRFrame } from './useWebXR/onXRFrame.js';
 
-let currentModelRef = null;
-export const setModelRef = (ref) => (currentModelRef = ref);
-export const getModelRef = () => currentModelRef;
+const requestARSession = async (overlayElement) => {
+    try {
+        const session = await navigator.xr.requestSession('immersive-ar', {
+            requiredFeatures: ['local', 'hit-test'],
+            optionalFeatures: ['dom-overlay'],
+            domOverlay: { root: overlayElement }
+        });
 
+        return session; 
+    } catch (error) {
+        throw new Error('Error requesting AR session: ' + error.message);
+    };
+};
+
+const requestInitializeWebGL2 = (session) => {
+    try {
+        return initializeWebGl2(session);
+    } catch(error) {
+        throw new Error('Error initializing WebGL: ', error);
+    };
+};
+
+const handleStartARSessionOrchestral = async () => {
+    const overlayElement = document.getElementById('overlay');
+
+    try {
+        const session = await requestARSession(overlayElement);
+
+        requestInitializeWebGL2(session);
+    } catch(error) {
+        console.error(error);
+        return;
+    };
+};
 export const useWebXR = () => {
     const { session, referenceSpace, setSessionState, setReferenceSpaceState, toggleIsSessionEnded } = useArSceneState();
     const { xrError, populateSetXRError } = useErrorState();
@@ -28,11 +58,7 @@ export const useWebXR = () => {
         
         try {
 
-            const session = await navigator.xr.requestSession('immersive-ar', {
-                requiredFeatures: ['local', 'hit-test'],
-                optionalFeatures: ['dom-overlay'],
-                domOverlay: { root: overlayElement}
-            });
+            const session = await requestARSession(overlayElement);
             setSessionState(session);
             initializeWebGl2(session);
             
