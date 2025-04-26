@@ -3,9 +3,9 @@ import { useErrorState } from './useErrorState';
 import { useArSceneState } from './useArSceneState';
 import { checkWebXRPossible } from './useWebXR/checkWebXRPossible.js';
 import { initializeWebGl2 } from './useWebXR/initializeWebGL2.js';
-import { requestReferenceSpace } from './useWebXR/requestReferenceSpace.js';
 import { initializeHitSource } from './useWebXR/initializeHitSource.js';
 import { onXRFrame } from './useWebXR/onXRFrame.js';
+import { initializeReferenceSpace } from './useWebXR/requestReferenceSpace.js';
 
 const requestARSession = async (overlayElement) => {
     try {
@@ -29,51 +29,77 @@ const requestInitializeWebGL2 = (session) => {
     };
 };
 
-const handleStartARSessionOrchestral = async () => {
+const requestReferenceSpace = async (session) => {
+    try {
+        const referenceSpace = await initializeReferenceSpace(session);
+        return referenceSpace;
+    } catch(error) {
+        throw new Error('Error setting referenceSpace: ', error);
+    };
+};
+
+const requestHitTestSource = async (session, referenceSpace) => {
+    try {
+        const hitTestSource = await initializeHitSource(session, referenceSpace);
+        return hitTestSource;
+    } catch(error) {
+        throw new Error('Error setting the hit test source: ', error);
+    };
+};
+
+const requestFrameAnimation = (session, referenceSpace, hitTestSource) => {
+    try {
+        session.requestAnimationFrame((time, frame) => {
+            onXRFrame(session, referenceSpace, time, frame, hitTestSource);
+        });
+    } catch(error) {
+        throw new Error('Error starting the animation frame: ', error);
+    };
+};
+
+const handleStartARSessionOrchestral = async (setSessionState, setReferenceSpaceState, setHitTestSource) => {
     const overlayElement = document.getElementById('overlay');
 
     try {
         const session = await requestARSession(overlayElement);
+        setSessionState(session);
 
         requestInitializeWebGL2(session);
+
+        const referenceSpace = await requestReferenceSpace(session);
+        setReferenceSpaceState(referenceSpace);
+
+        const hitTestSource = await requestHitTestSource(session, referenceSpace);
+        setHitTestSource(hitTestSource);
+
+        session.addEventListener('end', () => setSessionState(null));
+
+        session.requestAnimationFrame((time, frame) => onXRFrame(session, referenceSpace, time, frame, hitTestSource));
+
+        console.log('AR session started successfully');
     } catch(error) {
         console.error(error);
         return;
     };
 };
+
 export const useWebXR = () => {
     const { session, referenceSpace, setSessionState, setReferenceSpaceState, toggleIsSessionEnded } = useArSceneState();
     const { xrError, populateSetXRError } = useErrorState();
 
     const [hitTestSource, setHitTestSource] = useState(null);
-    const [modelPosition, setModelPosition] = useState(null);
 
     useEffect(() => {
         checkWebXRPossible(populateSetXRError);
     }, []);
 
     const handleStartARSession = async () => {
-
-        const overlayElement = document.getElementById('overlay');
-        
         try {
-
-            const session = await requestARSession(overlayElement);
-            setSessionState(session);
-            initializeWebGl2(session);
-            
-            const returnedReferenceSpace = await requestReferenceSpace(session);
-            setReferenceSpaceState(returnedReferenceSpace);
-
-            const initializedHitTestSource = await initializeHitSource(session, returnedReferenceSpace);
-            setHitTestSource(initializedHitTestSource);
-
-            session.addEventListener('end', () => {
-                setSessionState(null);
+            await handleStartARSessionOrchestral({
+                setSessionState,
+                setReferenceSpaceState,
+                setHitTestSource
             });
-            console.log('onXRFRame started. referenceSpace: ', returnedReferenceSpace);
-
-            session.requestAnimationFrame((time, frame) => onXRFrame(session, returnedReferenceSpace, time, frame, initializedHitTestSource, setModelPosition));
 
         } catch (error) {
             console.log('Error: ', error);
@@ -107,7 +133,6 @@ export const useWebXR = () => {
         session,
         referenceSpace,
         xrError,
-        modelPosition,
         handleStartARSession,
         handleEndARSession,
     };

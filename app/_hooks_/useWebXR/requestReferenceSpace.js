@@ -1,4 +1,4 @@
-export const requestReferenceSpace = async (session) => {
+export const initializeReferenceSpace = async (session) => {
     try {
         if (!session) {
             throw new Error('Failed to request reference space: Missing session.');

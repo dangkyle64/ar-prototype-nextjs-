@@ -13,8 +13,6 @@ const ArSceneControls = () => {
 
     const plyFileUrl = "https://ar-prototype-nodejs.onrender.com/api/ply/fused.ply";
 
-    const { isModelLoaded, modelRef } = usePlyModel(plyFileUrl, modelPosition);
-
     useEffect(() => {
         handleSessionValidation(session, setSessionNotActive, setSessionActive);
     }, [session]);
@@ -39,8 +37,6 @@ const ArSceneControls = () => {
                 </button>
             </div>
 
-            {/* Display model loading status */}
-            {isModelLoaded ? <div>Model Loaded!</div> : <div>Loading Model...</div>}
         </div>
     );
 };
