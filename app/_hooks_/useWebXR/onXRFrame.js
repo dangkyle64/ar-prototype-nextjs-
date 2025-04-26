@@ -9,22 +9,17 @@ export const onXRFrame = (session, referenceSpace, time, frame, hitTestSource, s
 
     if(xrPose && xrPose.views && xrPose.views.length > 0) {
         const pose = xrPose.views[0];
-        //const transform = pose.transform;
-        //const cameraPosition = transform.position;
-        //const cameraRotation = transform.orientation;
+        const transform = pose.transform;
+        const cameraPosition = transform.position;
+        const cameraRotation = transform.orientation;
 
         const { position = { x: 0, y: 0, z: 0 }, orientation = { x: 0, y: 0, z: 0, w: 1 } } = pose;
 
-        console.log('Pose:', pose);
-        console.log('Pose transform: ', pose.transform);
-        console.log('Position:', position);
-        console.log('Orientation:', orientation);
+        //camera.position.set(position.x, position.y, position.z);
+        //camera.rotation.set(orientation.x, orientation.y, orientation.z);
 
-        camera.position.set(position.x, position.y, position.z);
-        camera.rotation.set(orientation.x, orientation.y, orientation.z);
-
-        //console.log('Camera Position:', cameraPosition);
-        //console.log('Camera Rotation (Quaternion):', cameraRotation);
+        console.log('Camera Position:', cameraPosition);
+        console.log('Camera Rotation (Quaternion):', cameraRotation);
 
         renderer.render(scene, camera);
     } else {
