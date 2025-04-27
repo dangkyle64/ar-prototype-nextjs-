@@ -24,7 +24,6 @@ export const initializeThreeScene = (gl, session) => {
     
     sphere.position.set(0, 0, -0.5);
     camera.add(sphere);
-    scene.add(sphere);
 
     return { scene, camera, renderer, sphere };
 };
