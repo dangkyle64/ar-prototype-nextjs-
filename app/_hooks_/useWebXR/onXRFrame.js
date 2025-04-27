@@ -18,13 +18,6 @@ export const onXRFrame = (session, referenceSpace, time, frame, hitTestSource, s
         camera.position.set(cameraPosition.x, cameraPosition.y, cameraPosition.z);
         camera.quaternion.set(cameraRotation.x, cameraRotation.y, cameraRotation.z, cameraRotation.w);
 
-        // Place the sphere 2 meters in front of the camera
-        const forward = new THREE.Vector3(0, 0, -1);
-        forward.applyQuaternion(camera.quaternion);
-        forward.multiplyScalar(2);
-        sphere.position.copy(camera.position.clone().add(forward));
-        //sphere.position.set(camera.position.x + 1, camera.position.y, camera.position.z + 2);
-
         console.log('Camera Position:', camera.position);
         console.log('Sphere Position:', sphere.position);
         //console.log('Camera Position:', cameraPosition);
