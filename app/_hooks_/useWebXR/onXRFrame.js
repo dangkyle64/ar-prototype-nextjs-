@@ -23,7 +23,8 @@ export const onXRFrame = (session, referenceSpace, time, frame, hitTestSource, s
         //console.log('Camera Position:', cameraPosition);
         //console.log('Camera Rotation (Quaternion):', cameraRotation);
 
-        renderer.render(scene, camera);
+        const xrCamera = renderer.xr.getCamera();
+        renderer.render(scene, xrCamera);
     } else {
         console.error("xrPose or its views are undefined");
     };

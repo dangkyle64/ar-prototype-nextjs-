@@ -14,12 +14,13 @@ export const initializeThreeScene = (gl, session) => {
     renderer.autoClear = false;
     renderer.xr.enabled = true;
     renderer.xr.setSession(session);
-    renderer.xr.setReferenceSpaceType('viewer');
+    //renderer.xr.setReferenceSpaceType('viewer');
 
     const sphere = new THREE.Mesh(
         new THREE.SphereGeometry(0.5, 32, 32),
         new THREE.MeshBasicMaterial({ color: 0xff0000 })
     );
+
     
     sphere.position.set(0, 0, -0.5);
     camera.add(sphere);
