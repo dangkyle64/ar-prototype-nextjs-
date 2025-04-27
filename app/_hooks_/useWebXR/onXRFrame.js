@@ -15,8 +15,8 @@ export const onXRFrame = (session, referenceSpace, time, frame, hitTestSource, s
         const cameraPosition = transform.position;
         const cameraRotation = transform.orientation;
 
-        camera.position.set(cameraPosition.x, cameraPosition.y, cameraPosition.z);
-        camera.quaternion.set(cameraRotation.x, cameraRotation.y, cameraRotation.z, cameraRotation.w);
+        //camera.position.set(cameraPosition.x, cameraPosition.y, cameraPosition.z);
+        //camera.quaternion.set(cameraRotation.x, cameraRotation.y, cameraRotation.z, cameraRotation.w);
 
         console.log('Camera Position:', camera.position);
         console.log('Sphere Position:', sphere.position);
@@ -24,6 +24,8 @@ export const onXRFrame = (session, referenceSpace, time, frame, hitTestSource, s
         //console.log('Camera Rotation (Quaternion):', cameraRotation);
 
         const xrCamera = renderer.xr.getCamera();
+        const forward = new THREE.Vector3(0, 0, -1).applyQuaternion(xrCamera.quaternion).multiplyScalar(2);
+        sphere.position.copy(xrCamera.position).add(forward);
         renderer.render(scene, xrCamera);
     } else {
         console.error("xrPose or its views are undefined");

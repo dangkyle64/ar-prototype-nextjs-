@@ -21,7 +21,6 @@ export const initializeThreeScene = (gl, session) => {
         new THREE.MeshBasicMaterial({ color: 0xff0000 })
     );
 
-    
     sphere.position.set(0, 0, -0.5);
     camera.add(sphere);
 
