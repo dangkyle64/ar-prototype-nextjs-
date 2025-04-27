@@ -1,3 +1,5 @@
+import * as THREE from 'three';
+
 export const onXRFrame = (session, referenceSpace, time, frame, hitTestSource, scene, camera, renderer, sphere) => {
     if (!referenceSpace) {
         session.requestAnimationFrame((time, frame) => onXRFrame(session, referenceSpace, time, frame, hitTestSource, scene, camera, renderer, sphere));
