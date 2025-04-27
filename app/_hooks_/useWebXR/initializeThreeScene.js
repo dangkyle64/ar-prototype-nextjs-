@@ -12,6 +12,8 @@ export const initializeThreeScene = (gl) => {
     });
 
     renderer.autoClear = false;
+    renderer.xr.enabled = true;
+    renderer.xr.setReferenceSpaceType('local');
 
     const sphere = new THREE.Mesh(
         new THREE.SphereGeometry(0.1, 32, 32),
