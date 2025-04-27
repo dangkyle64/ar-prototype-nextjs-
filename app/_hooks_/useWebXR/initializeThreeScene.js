@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 
-export const initializeThreeScene = (gl) => {
+export const initializeThreeScene = (gl, session) => {
     const scene = new THREE.Scene();
 
     const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
@@ -13,6 +13,7 @@ export const initializeThreeScene = (gl) => {
 
     renderer.autoClear = false;
     renderer.xr.enabled = true;
+    renderer.xr.setSession(session);
     renderer.xr.setReferenceSpaceType('local');
 
     const sphere = new THREE.Mesh(

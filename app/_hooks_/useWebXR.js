@@ -50,7 +50,7 @@ const requestHitTestSource = async (session, referenceSpace) => {
 
 const requestFrameAnimation = (session, referenceSpace, hitTestSource, gl) => {
 
-    const { scene, camera, renderer, sphere } = initializeThreeScene(gl);
+    const { scene, camera, renderer, sphere } = initializeThreeScene(gl, session);
 
     try {
         session.requestAnimationFrame((time, frame) => {
